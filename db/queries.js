@@ -1,16 +1,16 @@
 // file to hold functions that perform SQL queries related to departments, roles, and employees
 
-const connection = require('./db/connection.js');
+const connection = require('./connection.js');
 
 module.exports = {
     getAllDepartments: function () {
         return connection.query('SELECT * FROM department');
     },
     getAllRoles: function () {
-        return connection.query('SELECT * FROM role');
+        return connection.query('SELECT role.id, role.title, department.name AS department_name, role.salary FROM role JOIN department ON role.department_id = department.id');
     },
     getAllEmployees: function () {
-        return connection.query('SELECT * FROM employee');
+        return connection.query('SELECT employee.id, employee.first_name, employee.last_name, department.name, role.title, role.salary FROM employee JOIN role on employee.role_id = role.id JOIN department on role.department_id = department.id');
     },
     addDepartment: function(departmentName) {
         return connection.query ('INSERT INTO department (name) VALUES (?)', departmentName);

@@ -1,0 +1,92 @@
+[
+    {
+        "first_name": "Lex",
+        "last_name": "Luthor",
+        "role_id": 1,
+        "manager_id": null
+    },
+    {
+        "first_name": "James",
+        "last_name": "Moriarty",
+        "role_id": 2,
+        "manager_id": 1
+    },
+    {
+        "first_name": "Ernst",
+        "last_name": "Blofeld",
+        "role_id": 3,
+        "manager_id": 1
+    },
+    {
+        "first_name": "Ivan",
+        "last_name": "Drago",
+        "role_id": 4,
+        "manager_id": 3
+    },
+    {
+        "first_name": "Auric",
+        "last_name": "Goldfinger",
+        "role_id": 5,
+        "manager_id": 1
+    },
+    {
+        "first_name": "Hans",
+        "last_name": "Gruber",
+        "role_id": 6,
+        "manager_id": 5
+    },
+    {
+        "first_name": "Harley",
+        "last_name": "Quinn",
+        "role_id": 3,
+        "manager_id": 3
+    },
+    {
+        "first_name": "Gru",
+        "last_name": "Despicable",
+        "role_id": 4,
+        "manager_id": 4
+    },
+    {
+        "first_name": "Draco",
+        "last_name": "Malfoy",
+        "role_id": 5,
+        "manager_id": 5
+    },
+    {
+        "first_name": "Norman",
+        "last_name": "Osborn",
+        "role_id": 6,
+        "manager_id": 6
+    },
+    {
+        "first_name": "Loki",
+        "last_name": "Laufeyson",
+        "role_id": 2,
+        "manager_id": 2
+    },
+    {
+        "first_name": "Bellatrix",
+        "last_name": "Lestrange",
+        "role_id": 3,
+        "manager_id": 3
+    },
+    {
+        "first_name": "Bane",
+        "last_name": "NoLastName",
+        "role_id": 4,
+        "manager_id": 4
+    },
+    {
+        "first_name": "Walter",
+        "last_name": "White",
+        "role_id": 5,
+        "manager_id": 5
+    },
+    {
+        "first_name": "Gus",
+        "last_name": "Fring",
+        "role_id": 6,
+        "manager_id": 6
+    }
+]

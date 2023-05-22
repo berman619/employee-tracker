@@ -22,54 +22,53 @@ function mainMenu() {
         switch (response.action) {
           case 'View all departments':
             return viewAllDepartments();
-          case 'View all roles:':
+          case 'View all roles':
             return viewAllRoles();
           case 'View all employees':
             return viewAllEmployees();
           case 'Add a department':
             return addDepartment();
+          case 'Add an employee':
+            return addEmployee();
           // Handle other cases
           case 'Exit':
           console.log('Goodbye!');
           process.exit();
         }
       })
-
-function viewAllDepartments() {
-db.getAllDepartments()
-    .then((departments) => {
-    console.table(departments);
-    mainMenu();
-    })
-    .catch((err) => {
-    console.log(err);
-    mainMenu();
-    });
-  }
-function viewAllRoles() {
-db.getAllRoles()
-    .then((roles) => {
-    console.table(roles);
-    mainMenu();
-    })
-    .catch((err) => {
-    console.log(err);
-    mainMenu();
-    });
-  }
-function viewAllEmployees() {
-db.getAllEmployees()
-    .then((employees) => {
-    console.table(employees);
-    mainMenu();
-    })
-    .catch((err) => {
-    console.log(err);
-    mainMenu();
-    });
+  function viewAllDepartments() {
+    db.getAllDepartments()
+        .then(([departments]) => {
+            console.table(departments);
+            mainMenu();
+        })
+        .catch((err) => {
+            console.log(err);
+            mainMenu();
+        });
     }
+function viewAllRoles() {
+  db.getAllRoles()
+      .then(([roles]) => {
+          console.table(roles);
+          mainMenu();
+      })
+      .catch((err) => {
+          console.log(err);
+          mainMenu();
+      });
 }
-
+function viewAllEmployees() {
+  db.getAllEmployees()
+      .then(([employees]) => {
+          console.table(employees);
+          mainMenu();
+      })
+      .catch((err) => {
+          console.log(err);
+          mainMenu();
+      });
+}
 function addDepartment() {
     inquirer.prompt({
         type: 'input',
@@ -128,5 +127,15 @@ function addEmployee() {
             });
         });
       });
+  })
+  .then(() => {
+    console.log("New employee added successfully!");
+    mainMenu();
+  })
+  .catch((error) => {
+    console.log(`An error occurred: ${error.message}`);
+    mainMenu();
   });
-}
+}}
+
+mainMenu();
