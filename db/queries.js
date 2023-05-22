@@ -20,5 +20,8 @@ module.exports = {
     },
     addEmployee: function(employee) {
         return connection.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)', [employee.first_name, employee.last_name, employee.role_id, employee.manager_id]);
+    },
+    updateEmployeeRole: function(employeeId, newRoleId) {
+        return connection.query('UPDATE employee SET role_id = ? WHERE id = ?', [newRoleId, employeeId]);
     }
 }
