@@ -89,64 +89,44 @@ function addDepartment() {
 }
 
 function addEmployee() {
-    inquirer.prompt([
-        {type: 'input',
-        name: 'first_name',
-        message: 'What is the first name of the new employee?'},
-        {type: 'input',
-        name: 'last_name',
-        message: 'What is the last name of the new employee?'}
-    ])
-    // 3. After receiving the last name, you'll need to query your database for a list of possible roles.
-    // This might look like calling a new function `db.getAllRoles()` that you would need to implement in your `db` module.
-    // You will use these roles to populate the choices in the next `inquirer.prompt`.
-    .then((answers) => {
-      let firstName = answers.first_name;
-      let lastName = answers.last_name;
-      db.getAllRoles().then((roles) => {
+  inquirer.prompt([
+      {type: 'input', name: 'first_name', message: 'What is the first name of the new employee?'},
+      {type: 'input', name: 'last_name', message: 'What is the last name of the new employee?'}
+  ])
+  .then((answers) => {
+    let firstName = answers.first_name;
+    let lastName = answers.last_name;
+    return db.getAllRoles()
+      .then((roles) => {
         let roleChoices = roles.map((role) => {
             return {name: role.title, value: role.id};
         });    
-    .then((roles) => 
-    // 4. Once you have the list of roles, use `inquirer.prompt` to ask the user to select a role for the new employee.
-    // The `type` for this prompt will be 'list', and the `choices` will be the roles that you queried from the database.
-    inquirer.prompt([
-        {type: 'list',
-        name: 'role',
-        message: 'What is the employee`s role?',
-        choices: [roleChoices
-          ]},
-    ]))
-    // 5. After receiving the chosen role, you'll need to convert that role to a role_id. This will depend on how your roles are structured,
-    // but typically you would find the chosen role in your list of roles and get its id.
-    role.title = role_id
-    // 6. Next, you'll need to query your database for a list of existing employees to serve as the possible managers.
-    // This might look like calling a new function `db.getAllEmployees()` that you would need to implement in your `db` module.
-    db.getAllEmployees().then((employees) => {
-      let managerChoices = employees.map((employee) => {
-          return {name: `${employee.first_name} ${employee.last_name}`, value: employee.id};
+        return inquirer.prompt([
+          {type: 'list', name: 'role_id', message: 'What is the employee`s role?', choices: roleChoices},
+        ])
+        .then((roleAnswer) => {
+          let role_id = roleAnswer.role_id;
+          return db.getAllEmployees()
+            .then((employees) => {
+              let managerChoices = employees.map((employee) => {
+                  return {name: `${employee.first_name} ${employee.last_name}`, value: employee.id};
+              });
+              managerChoices.push({name: "No Manager", value: null});
+              return inquirer.prompt([
+                {type: 'list', name: 'manager_id', message: 'Who is the employee`s manager?', choices: managerChoices},
+              ])
+              .then((managerAnswer) => {
+                let manager_id = managerAnswer.manager_id;
+                const newEmployee = {
+                  first_name: firstName,
+                  last_name: lastName,
+                  role_id: role_id, 
+                  manager_id: manager_id
+                };
+                return db.addEmployee(newEmployee);
+              });
+            });
+        });
       });
-      managerChoices.push({name: "No Manager", value: null});
-    // 7. Once you have the list of employees, use `inquirer.prompt` to ask the user to select a manager for the new employee.
-    // Again, the `type` will be 'list', and the `choices` will be the employees that you queried from the database.
-    inquirer.prompt([
-        {type: 'list',
-        name: 'manager',
-        message: 'What is the employee`s manager?',
-        choices: [managerChoices
-          ]},
-    ])
-    // 8. After receiving the chosen manager, you'll need to convert that manager to a manager_id similar to the role_id.
-    employee.id = manager_id
-
-    // 9. Finally, with all the necessary information collected (first name, last name, role_id, and manager_id),
-    // call `db.addEmployee()` as you're already doing, but pass an object that includes all these properties.
-    .then (() => 
-    const newEmployee = {
-      first_name,
-      last_name,
-      role_id, 
-      manager_id
-  };
-    db.addEmployee(newEmployee);
+  });
 }
