@@ -28,11 +28,12 @@ function mainMenu() {
             return viewAllEmployees();
           case 'Add a department':
             return addDepartment();
+          case 'Add a role':
+              return addRole();
           case 'Add an employee':
             return addEmployee();
           case 'Update an employee role':
             return updateEmployeeRole();
-          // Handle other cases
           case 'Exit':
           console.log('Goodbye!');
           process.exit();
@@ -71,6 +72,7 @@ function viewAllEmployees() {
           mainMenu();
       });
 }
+
 function addDepartment() {
     inquirer.prompt({
         type: 'input',
@@ -87,6 +89,55 @@ function addDepartment() {
                 mainMenu();
             });
     });
+}
+
+function addRole() {
+  inquirer.prompt({
+    type: 'input',
+    name: 'title',
+    message: 'What is the title of the new role?',
+  })
+  .then((titleAnswer) => {
+      let title = titleAnswer.title;
+      return inquirer.prompt({
+        type: 'input',
+        name: 'salary',
+        message: 'What is the salary of the new role?',
+      })
+      .then((salaryAnswer) => {
+          let salary = salaryAnswer.salary;
+          return db.viewAllDepartments()
+          .then(([departments]) => {
+              let departmentChoices = departments.map((department) => {
+                  return {name: department.name, value: department.id};
+              });
+              return inquirer.prompt([
+                {type: 'list', 
+                name: 'department_id',  // name changed to department_id
+                message: 'What department is the new role in?', 
+                choices: departmentChoices},
+              ])
+              .then((departmentAnswer) => {
+                  let department_id = departmentAnswer.department_id;
+                  const newRole = {
+                      title: title,
+                      salary: salary,
+                      department_id: department_id
+                  };
+                  console.log(newRole); // added for debugging
+                  return db.addRole(newRole);
+              });
+          });
+      });
+  })
+  .then(() => {
+      console.log("New role added successfully!");
+      mainMenu();
+  })
+  .catch((error) => {
+      console.log(`An error occurred: ${error.message}`);
+      mainMenu();
+  });
 }
 
 function addEmployee() {
