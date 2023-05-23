@@ -3,14 +3,20 @@
 const connection = require('./connection.js');
 
 module.exports = {
-    getAllDepartments: function () {
+    viewAllDepartments: function () {
         return connection.query('SELECT * FROM department');
     },
-    getAllRoles: function () {
+    viewAllRoles: function () {
         return connection.query('SELECT role.id, role.title, department.name AS department_name, role.salary FROM role JOIN department ON role.department_id = department.id');
     },
-    getAllEmployees: function () {
-        return connection.query('SELECT employee.id, employee.first_name, employee.last_name, department.name, role.title, role.salary FROM employee JOIN role on employee.role_id = role.id JOIN department on role.department_id = department.id');
+    viewAllEmployees: function () {
+        return connection.query(
+            'SELECT e.id, CONCAT(e.first_name, " ", e.last_name) AS employee_name, role.title, department.name AS department_name, COALESCE(CONCAT(m.first_name, " ", m.last_name), "none") AS manager_name, role.salary ' +
+            'FROM employee e ' +
+            'LEFT JOIN role ON e.role_id = role.id ' +
+            'LEFT JOIN department ON role.department_id = department.id ' +
+            'LEFT JOIN employee m ON e.manager_id = m.id'
+        );
     },
     addDepartment: function(departmentName) {
         return connection.query ('INSERT INTO department (name) VALUES (?)', departmentName);
@@ -21,7 +27,13 @@ module.exports = {
     addEmployee: function(employee) {
         return connection.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)', [employee.first_name, employee.last_name, employee.role_id, employee.manager_id]);
     },
-    updateEmployeeRole: function(employeeId, newRoleId) {
-        return connection.query('UPDATE employee SET role_id = ? WHERE id = ?', [newRoleId, employeeId]);
-    }
+    updateEmployeeRole: function(updatedEmployee) {
+        return connection.query('UPDATE employee SET role_id = ? WHERE id = ?', [updatedEmployee.role_id, updatedEmployee.id]);
+    },
+    getAllRoles: function () {
+        return connection.query('SELECT * FROM role');
+    },
+    getAllEmployees: function () {
+        return connection.query('SELECT * FROM employee');
+    },
 }

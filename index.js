@@ -30,6 +30,8 @@ function mainMenu() {
             return addDepartment();
           case 'Add an employee':
             return addEmployee();
+          case 'Update an employee role':
+            return updateEmployeeRole();
           // Handle other cases
           case 'Exit':
           console.log('Goodbye!');
@@ -37,7 +39,7 @@ function mainMenu() {
         }
       })
   function viewAllDepartments() {
-    db.getAllDepartments()
+    db.viewAllDepartments()
         .then(([departments]) => {
             console.table(departments);
             mainMenu();
@@ -48,7 +50,7 @@ function mainMenu() {
         });
     }
 function viewAllRoles() {
-  db.getAllRoles()
+  db.viewAllRoles()
       .then(([roles]) => {
           console.table(roles);
           mainMenu();
@@ -59,7 +61,7 @@ function viewAllRoles() {
       });
 }
 function viewAllEmployees() {
-  db.getAllEmployees()
+  db.viewAllEmployees()
       .then(([employees]) => {
           console.table(employees);
           mainMenu();
@@ -96,7 +98,7 @@ function addEmployee() {
     let firstName = answers.first_name;
     let lastName = answers.last_name;
     return db.getAllRoles()
-      .then((roles) => {
+      .then(([roles]) => {
         let roleChoices = roles.map((role) => {
             return {name: role.title, value: role.id};
         });    
@@ -106,7 +108,7 @@ function addEmployee() {
         .then((roleAnswer) => {
           let role_id = roleAnswer.role_id;
           return db.getAllEmployees()
-            .then((employees) => {
+            .then(([employees]) => {
               let managerChoices = employees.map((employee) => {
                   return {name: `${employee.first_name} ${employee.last_name}`, value: employee.id};
               });
@@ -136,6 +138,47 @@ function addEmployee() {
     console.log(`An error occurred: ${error.message}`);
     mainMenu();
   });
-}}
+}};
+
+function updateEmployeeRole() {
+  db.getAllEmployees ()
+    .then(([employees]) => {
+      let employeeChoice = employees.map((employee) => {
+        return {name: employee.first_name + " " + employee.last_name, value: employee.id};
+      });
+      return inquirer.prompt ([
+        {type: 'list', name: 'updateEmployee', message: 'Which employee`s role do you want to update?', choices: employeeChoice},
+      ]);
+    })
+    .then((answers) => {
+      let employeeId = answers.updateEmployee;
+      return db.getAllRoles() 
+        .then(([roles]) => {
+          let roleChoices = roles.map((role) => {
+              return {name: role.title, value: role.id};
+          });    
+          return inquirer.prompt([
+            {type: 'list', name: 'new_role_id', message: 'What is the employee`s new role?', choices: roleChoices},
+          ])
+          .then((roleAnswer) => {
+            let newRoleId = roleAnswer.new_role_id;
+            const updatedEmployee = {
+              id: employeeId,
+              role_id: newRoleId
+            };
+            console.log(`Updating role for employee ID ${employeeId} to new role ID ${newRoleId}`);
+            return db.updateEmployeeRole(updatedEmployee);
+          });
+        })
+        .then(() => {
+          console.log("Employee role updated successfully!");
+          mainMenu();
+        })
+        .catch((error) => {
+          console.log(`An error occurred: ${error.message}`);
+          mainMenu();
+        });
+    });
+}
 
 mainMenu();
