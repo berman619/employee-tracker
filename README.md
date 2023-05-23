@@ -11,8 +11,6 @@ Here is a [video](https://drive.google.com/file/d/1Eus7cc3mk311NHmIKkRHMD3wHcfdc
 
 ![Employee Tracker Screenshot](/assets/employeetracker.png)
 
-## Video
-
 ## Table of Contents 
 - [Usage](#usage)
 - [Contributing](#contributing)
